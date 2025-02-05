@@ -15,7 +15,7 @@ jobs:
 
     - name: Install Rust and dependencies
       run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        curl -y --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
         cargo install cargo-deb cargo-arch
 
     - name: Build .deb package
