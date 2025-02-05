@@ -57,6 +57,7 @@ You can change the values to your liking.
 
 ## To-Do
 
+- [ ] Refactor the code to make use of the struct/impl system
 - [ ] Add a pause feature (when pressing p for example)
 - [ ] Add a stop feature (when pressing q for example)
 - [ ] Add a way to add a notification sound (maybe a flag in the configuration file to force the sound, even if the system is muted)
