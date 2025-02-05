@@ -70,7 +70,7 @@ You can change the values to your liking.
 
 ## License
 
-This project is licensed under the CC BY-SA 4.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the CC BY-SA 4.0 License - see the [LICENSE](LICENSE.md) file for details.
 
 
 ## Contributing
