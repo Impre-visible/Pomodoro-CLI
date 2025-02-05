@@ -6,7 +6,6 @@ use modules::timer::Timer;
 use modules::notify::Notify;
 use modules::state::State;
 
-
 fn start_pomodoro(config: &Config, timer: &Timer) {
     let mut state: State;
     let mut duration: u64;
@@ -16,7 +15,6 @@ fn start_pomodoro(config: &Config, timer: &Timer) {
         duration = config.work_duration;
 
         timer.start( cycle, config.pomodoro_cycles, state, duration);
-        
 
         if cycle % config.pomodoro_cycles == 0 {
             state = State::Break;
