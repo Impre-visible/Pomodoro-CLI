@@ -23,7 +23,8 @@ jobs:
           pacman -S --noconfirm base-devel rust cargo-deb &&
           cargo install cargo-arch &&
           cargo deb &&
-          cargo arch"
+          cargo arch &&
+          rm pomodoro-cli-debug-*.pkg.tar.zst"
 
     - name: Upload .deb package as artifact
       uses: actions/upload-artifact@v4
@@ -35,4 +36,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: pomodoro-cli-arch
-        path: target/arch/*.pkg.tar.zst
+        path: ./*.pkg.tar.zst
