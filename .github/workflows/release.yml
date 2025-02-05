@@ -17,6 +17,8 @@ jobs:
       run: |
         curl -y --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
         cargo install cargo-deb cargo-arch
+        sudo apt update
+        sudo apt install -y base-devel # Installe makepkg et autres outils nécessaires
 
     - name: Build .deb package
       run: cargo deb
