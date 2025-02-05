@@ -1,22 +1,33 @@
 use std::{thread, time::Duration, io::Write};
 use terminal_size::{Width, Height, terminal_size};
+use serde::{Deserialize, Serialize};
+use std::fs;
+use directories::ProjectDirs;
 
-const POMODORO_CYCLES: u32 = 4;
 
-const WORK_DURATION: u64 = 25;
-const SHORT_BREAK_DURATION: u64 = 5;
-const LONG_BREAK_DURATION: u64 = 20;
+#[derive(Debug, Deserialize, Serialize)]
+struct Config {
+    pomodoro_cycles: u32,
+    work_duration: u64,
+    short_break_duration: u64,
+    long_break_duration: u64,
+}
 
-fn start_pomodoro() {
+fn get_config_path() -> Option<std::path::PathBuf> {
+    let proj_dirs = ProjectDirs::from("com", "imprevisible", "pomodoro-cli")?;
+    Some(proj_dirs.config_dir().join("config.toml"))
+}
+
+fn start_pomodoro(config: Config) {
     let mut cycle: u32 = 1;
 
     loop {
-        countdown(WORK_DURATION * 60, format!("Cycle {}/{}: Work for {} minutes", cycle, POMODORO_CYCLES, WORK_DURATION));
+        countdown(config.work_duration * 60, format!("Cycle {}/{}: Work for {} minutes", cycle, config.pomodoro_cycles, config.work_duration));
         
-        if cycle % POMODORO_CYCLES != 0 {
-            countdown(SHORT_BREAK_DURATION * 60, format!("Cycle {}/{}: Take a {} minute break", cycle, POMODORO_CYCLES, SHORT_BREAK_DURATION));
+        if cycle % config.pomodoro_cycles != 0 {
+            countdown(config.short_break_duration * 60, format!("Cycle {}/{}: Take a {} minute break", cycle, config.pomodoro_cycles, config.short_break_duration));
         } else {
-            countdown(LONG_BREAK_DURATION * 60, format!("Cycle {}/{}: Take a {} minute break", cycle, POMODORO_CYCLES, LONG_BREAK_DURATION));
+            countdown(config.long_break_duration * 60, format!("Cycle {}/{}: Take a {} minute break", cycle, config.pomodoro_cycles, config.long_break_duration));
             cycle = 0;
         }
 
@@ -31,14 +42,14 @@ fn format_seconds(seconds: u64) -> String {
 fn countdown(seconds: u64, string: String) {
     let size = terminal_size();
 
-    if let Some((Width(w), Height(h))) = size {
+    if let Some((Width(_w), Height(_h))) = size {
         for remaining in (1..=seconds).rev() {
             println!("{}", string);
             println!("Time remaining: {}", format_seconds(remaining));
 
             let size = terminal_size();
-            let (w, h) = if let Some((Width(w), Height(h))) = size {
-                (w, h)
+            let (_w, h) = if let Some((Width(_w), Height(h))) = size {
+                (_w, h)
             } else {
                 (0, 0)
             };
@@ -50,12 +61,38 @@ fn countdown(seconds: u64, string: String) {
             std::io::stdout().flush();
             thread::sleep(Duration::from_secs(1));
         }
-        println!(); // Saute une ligne après le décompte
+        println!();
     } else {
         println!("Unable to get terminal size");
     }
 }
 
+fn load_config() -> Config {
+    let default_config = Config {
+        pomodoro_cycles: 4,
+        work_duration: 25,
+        short_break_duration: 5,
+        long_break_duration: 20,
+    };
+
+    if let Some(config_path) = get_config_path() {
+        if config_path.exists() {
+            let config_content = fs::read_to_string(&config_path).unwrap_or_default();
+            toml::from_str(&config_content).unwrap_or(default_config)
+        } else {
+            let toml_string = toml::to_string(&default_config).unwrap();
+            if let Some(parent) = config_path.parent() {
+                fs::create_dir_all(parent).unwrap();
+            }
+            fs::write(&config_path, toml_string).unwrap();
+            default_config
+        }
+    } else {
+        default_config
+    }
+}
+
 fn main() {
-    start_pomodoro();
+    let config = load_config();
+    start_pomodoro(config);
 }
