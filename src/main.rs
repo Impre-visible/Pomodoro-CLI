@@ -3,6 +3,7 @@ use terminal_size::{Width, Height, terminal_size};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use directories::ProjectDirs;
+use notify_rust::Notification;
 
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -40,6 +41,11 @@ fn format_seconds(seconds: u64) -> String {
 }
 
 fn countdown(seconds: u64, string: String) {
+    Notification::new()
+        .summary("Pomodoro")
+        .body(&string)
+        .show()
+        .unwrap();
     let size = terminal_size();
 
     if let Some((Width(_w), Height(_h))) = size {
@@ -58,7 +64,7 @@ fn countdown(seconds: u64, string: String) {
                 println!();
             }
 
-            std::io::stdout().flush();
+            let _ = std::io::stdout().flush();
             thread::sleep(Duration::from_secs(1));
         }
         println!();

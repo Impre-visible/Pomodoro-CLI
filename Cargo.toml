@@ -8,3 +8,4 @@ serde = { version = "1.0.217", features = ["derive"] }
 directories = "6.0.0"
 terminal_size = "0.4.1"
 toml = "0.8.19"
+notify-rust = "4.11.4"
