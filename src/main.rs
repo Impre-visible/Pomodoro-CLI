@@ -96,4 +96,5 @@ fn print_timer(seconds: u64, message: &str) {
 fn main() {
     let config = load_config();
     start_pomodoro(&config);
+    notify("Pomodoro completed!");
 }
