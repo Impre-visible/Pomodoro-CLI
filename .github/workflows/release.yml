@@ -1,0 +1,37 @@
+name: Build and release packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Rust and dependencies
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        cargo install cargo-deb cargo-arch
+
+    - name: Build .deb package
+      run: cargo deb
+
+    - name: Build .pkg.tar.zst package
+      run: cargo arch
+
+    - name: Upload .deb package as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pomodoro-cli-deb
+        path: target/debian/*.deb
+
+    - name: Upload .pkg.tar.zst package as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pomodoro-cli-arch
+        path: target/arch/*.pkg.tar.zst
