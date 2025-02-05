@@ -27,8 +27,10 @@ jobs:
             su builder -c 'cargo install cargo-arch' &&
             chown -R builder:builder /workspace &&
             su builder -c 'cargo arch -f' &&
-            ls &&
-            rm *debug*"
+            rm *debug* &&
+            echo 'depends=("gcc-libs" "glibc")' >> PKGBUILD &&
+            makepkg -f
+            "
 
       - name: Upload .deb package as artifact
         uses: actions/upload-artifact@v4
@@ -41,6 +43,13 @@ jobs:
         with:
           name: pomodoro-cli-arch
           path: ./*.pkg.tar.zst
+
+      - name: Upload PKGBUILD as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pomodoro-cli-pkgbuild
+          path: PKGBUILD
+
 
   release:
     needs: build
