@@ -25,13 +25,13 @@ jobs:
       run: cargo arch
 
     - name: Upload .deb package as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: pomodoro-cli-deb
         path: target/debian/*.deb
 
     - name: Upload .pkg.tar.zst package as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: pomodoro-cli-arch
         path: target/arch/*.pkg.tar.zst
