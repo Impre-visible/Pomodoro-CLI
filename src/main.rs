@@ -1,12 +1,12 @@
 mod config;
 mod display;
 mod timer;
-
-use notify_rust::Notification;
+mod notify;
 
 use config::Config;
 use display::Display;
 use timer::Timer;
+use notify::Notify;
 
 
 fn start_pomodoro(config: &Config, timer: &Timer) {
@@ -23,18 +23,10 @@ fn start_pomodoro(config: &Config, timer: &Timer) {
     }
 }
 
-
-fn notify(message: &str) {
-    let _ = Notification::new()
-        .summary("Pomodoro")
-        .body(message)
-        .show();
-}
-
 fn main() {
     let config = Config::load();
     let display = Display::new();
     let timer = Timer::new(display);
     start_pomodoro(&config,  &timer);
-    notify("Pomodoro completed!");
+    Notify::notify("Pomodoro completed!");
 }
