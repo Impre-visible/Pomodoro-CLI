@@ -7,12 +7,13 @@ fn start_pomodoro() {
     let mut cycle: u32 = 1;
 
     loop {
-        countdown(25 * 60, format!("Cycle {}/4: Work for 25 minutes", cycle));
+        countdown(1 * 60, format!("Cycle {}/4: Work for 25 minutes", cycle));
         
         if cycle % 4 != 0 {
             countdown(5 * 60, format!("Cycle {}/4: Take a 5 minute break", cycle));
         } else {
             countdown(20 * 60, format!("Cycle {}/4: Take a 20 minute break", cycle));
+            cycle = 0;
         }
 
         cycle += 1;
