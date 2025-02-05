@@ -24,6 +24,7 @@ jobs:
             cargo install cargo-arch &&
             cargo deb &&
             cargo arch &&
+            ls &&
             rm *debug*"
 
       - name: Upload .deb package as artifact
