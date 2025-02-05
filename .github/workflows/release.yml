@@ -21,9 +21,10 @@ jobs:
           docker run --rm -v $PWD:/workspace -w /workspace archlinux:latest bash -c "
             pacman -Syu --noconfirm && 
             pacman -S --noconfirm base-devel rust cargo-deb &&
-            cargo install cargo-arch &&
-            cargo deb &&
-            cargo arch &&
+            useradd -m builder &&
+            su builder -c 'cargo install cargo-arch' &&
+            su builder -c 'cargo deb' &&
+            su builder -c 'cargo arch' &&
             ls &&
             rm *debug*"
 
