@@ -25,8 +25,11 @@ fn start_pomodoro(config: &Config, timer: &Timer) {
 
 fn main() {
     let config = Config::load();
+
     let display = Display::new();
-    let timer = Timer::new(display);
+    let notify = Notify::new();
+
+    let timer = Timer::new(display, notify);
+    
     start_pomodoro(&config,  &timer);
-    Notify::notify("Pomodoro completed!");
 }
