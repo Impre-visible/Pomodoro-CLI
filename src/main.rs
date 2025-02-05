@@ -1,56 +1,9 @@
-use std::{fs, io::Write, thread, time::Duration, path::PathBuf};
-use serde::{Deserialize, Serialize};
-use directories::ProjectDirs;
+use std::{thread, time::Duration, io::Write};
 use notify_rust::Notification;
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Config {
-    pomodoro_cycles: u32,
-    work_duration: u64,
-    short_break_duration: u64,
-    long_break_duration: u64,
-}
+mod config;
+use config::Config;
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            pomodoro_cycles: 4,
-            work_duration: 25,
-            short_break_duration: 5,
-            long_break_duration: 20,
-        }
-    }
-}
-
-fn get_config_path() -> Option<PathBuf> {
-    ProjectDirs::from("com", "imprevisible", "pomodoro-cli")
-        .map(|proj_dirs| proj_dirs.config_dir().join("config.toml"))
-}
-
-fn load_config() -> Config {
-    let config_path = match get_config_path() {
-        Some(path) => path,
-        None => return Config::default(),
-    };
-
-    if config_path.exists() {
-        fs::read_to_string(&config_path)
-            .ok()
-            .and_then(|content| toml::from_str(&content).ok())
-            .unwrap_or_else(Config::default)
-    } else {
-        save_default_config(&config_path)
-    }
-}
-
-fn save_default_config(config_path: &PathBuf) -> Config {
-    let default_config = Config::default();
-    if let Some(parent) = config_path.parent() {
-        let _ = fs::create_dir_all(parent);
-    }
-    let _ = fs::write(config_path, toml::to_string(&default_config).unwrap());
-    default_config
-}
 
 fn start_pomodoro(config: &Config) {
     for cycle in 1..=config.pomodoro_cycles {
@@ -94,7 +47,7 @@ fn print_timer(seconds: u64, message: &str) {
 }
 
 fn main() {
-    let config = load_config();
+    let config = Config::load();
     start_pomodoro(&config);
     notify("Pomodoro completed!");
 }
