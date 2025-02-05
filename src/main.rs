@@ -1,14 +1,10 @@
-mod config;
-mod display;
-mod timer;
-mod notify;
-mod state;
+mod modules;
 
-use config::Config;
-use display::Display;
-use timer::Timer;
-use notify::Notify;
-use state::State;
+use modules::config::Config;
+use modules::display::Display;
+use modules::timer::Timer;
+use modules::notify::Notify;
+use modules::state::State;
 
 
 fn start_pomodoro(config: &Config, timer: &Timer) {
