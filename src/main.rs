@@ -1,13 +1,17 @@
-use std::{thread, time::Duration, io::Write};
+mod config;
+mod display;
+
+use std::{thread, time::Duration};
 use notify_rust::Notification;
 
-mod config;
+
 use config::Config;
+use display::Display;
 
 
-fn start_pomodoro(config: &Config) {
+fn start_pomodoro(config: &Config, display: &Display) {
     for cycle in 1..=config.pomodoro_cycles {
-        countdown(config.work_duration, &format!("Cycle {}/{}: Work", cycle, config.pomodoro_cycles));
+        countdown(display, config.work_duration, &format!("Cycle {}/{}: Work", cycle, config.pomodoro_cycles));
         
         let break_duration = if cycle % config.pomodoro_cycles == 0 {
             config.long_break_duration
@@ -15,16 +19,16 @@ fn start_pomodoro(config: &Config) {
             config.short_break_duration
         };
 
-        countdown(break_duration, &format!("Cycle {}/{}: Take a {} minute break", cycle, config.pomodoro_cycles, break_duration));
+        countdown(display, break_duration, &format!("Cycle {}/{}: Take a {} minute break", cycle, config.pomodoro_cycles, break_duration));
     }
 }
 
-fn countdown(minutes: u64, message: &str) {
+fn countdown(display: &Display, minutes: u64, message: &str) {
     notify(message);
     let total_seconds = minutes * 60;
 
     for remaining in (1..=total_seconds).rev() {
-        print_timer(remaining, message);
+        display.display_timer(message, remaining);
         thread::sleep(Duration::from_secs(1));
     }
 }
@@ -36,18 +40,9 @@ fn notify(message: &str) {
         .show();
 }
 
-fn print_timer(seconds: u64, message: &str) {
-    let formatted_time = format!("{:02}:{:02}", seconds / 60, seconds % 60);
-
-    print!("\x1B[2J\x1B[H");
-    println!("{}", message);
-    println!("Time remaining: {}", formatted_time);
-
-    let _ = std::io::stdout().flush();
-}
-
 fn main() {
     let config = Config::load();
-    start_pomodoro(&config);
+    let display = Display::new();
+    start_pomodoro(&config, &display);
     notify("Pomodoro completed!");
 }
