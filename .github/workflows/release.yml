@@ -20,7 +20,8 @@ jobs:
       run: |
         docker run --rm -v $PWD:/workspace -w /workspace archlinux:latest bash -c "
           pacman -Syu --noconfirm && 
-          pacman -S --noconfirm base-devel rust cargo-deb cargo-arch &&
+          pacman -S --noconfirm base-devel rust cargo-deb &&
+          cargo install cargo-arch &&
           cargo deb &&
           cargo arch"
 
