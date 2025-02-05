@@ -22,8 +22,8 @@ jobs:
             pacman -Syu --noconfirm && 
             pacman -S --noconfirm base-devel rust cargo-deb &&
             useradd -m builder &&
-            su builder -c 'cargo install cargo-arch' &&
-            su builder -c 'cargo deb' &&
+            cargo install cargo-arch
+            cargo deb &&
             su builder -c 'cargo arch' &&
             ls &&
             rm *debug*"
