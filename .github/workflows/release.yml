@@ -29,8 +29,8 @@ jobs:
             su builder -c 'cargo arch -f' &&
             rm *debug* &&
             echo 'depends=("gcc-libs" "glibc")' >> PKGBUILD &&
-            makepkg -f &&
-            makepkg --printsrcinfo > .SRCINFO
+            su builder -c 'makepkg -f' &&
+            su builder -c 'makepkg --printsrcinfo > .SRCINFO'
             "
 
       - name: Upload .deb package as artifact
