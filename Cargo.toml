@@ -1,7 +1,12 @@
 [package]
-name = "Pomodoro-CLI"
+name = "pomodoro-cli"
 version = "0.1.0"
 edition = "2021"
+license = "CC BY-SA 4.0"
+maintainer = "Roméo Chevrier <romeo@chevrier.dev>"
+authors = ["Roméo Chevrier <romeo@chevrier.dev>"]
+description = "A simple Pomodoro CLI"
+readme = "README.md"
 
 [dependencies]
 serde = { version = "1.0.217", features = ["derive"] }
