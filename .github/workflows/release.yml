@@ -27,11 +27,7 @@ jobs:
             su builder -c 'cargo install cargo-arch' &&
             chown -R builder:builder /workspace &&
             su builder -c 'cargo arch -f' &&
-            rm *debug* &&
-            echo 'depends=("gcc-libs" "glibc")' >> PKGBUILD &&
-            su builder -c 'makepkg -f' &&
-            su builder -c 'makepkg --printsrcinfo > .SRCINFO'
-            "
+            rm *debug*"
 
       - name: Upload .deb package as artifact
         uses: actions/upload-artifact@v4
@@ -44,18 +40,6 @@ jobs:
         with:
           name: pomodoro-cli-arch
           path: ./*.pkg.tar.zst
-
-      - name: Upload PKGBUILD as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pomodoro-cli-pkgbuild
-          path: PKGBUILD
-
-      - name: Upload .SRCINFO as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pomodoro-cli-srcinfo
-          path: .SRCINFO
 
   release:
     needs: build
@@ -75,18 +59,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pomodoro-cli-arch
-          path: artifacts/
-
-      - name: Download PKGBUILD artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: pomodoro-cli-pkgbuild
-          path: artifacts/
-
-      - name: Download .SRCINFO artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: pomodoro-cli-srcinfo
           path: artifacts/
 
       - name: Create GitHub Release
