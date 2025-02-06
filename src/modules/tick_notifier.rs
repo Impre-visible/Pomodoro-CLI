@@ -23,9 +23,9 @@ impl TickNotifier {
         self.callbacks.push(callback);
     }
 
-    pub fn notify(&self, tick_type: TickType, state: State, value1: u64, value2: u64, value3: u64) {
+    pub fn notify(&self, tick_type: TickType, state: State, current_cycle: u64, cycle_count: u64, time: u64) {
         for callback in self.callbacks.iter() {
-            callback(tick_type, state, value1, value2, value3);
+            callback(tick_type, state, current_cycle, cycle_count, time);
         }
     }
 }
