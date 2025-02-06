@@ -1,5 +1,7 @@
 mod modules;
 
+use std::iter::Cycle;
+
 use modules::config::Config;
 use modules::display::Display;
 use modules::timer::Timer;
@@ -10,8 +12,9 @@ use modules::tick_notifier::TickNotifier;
 fn start_pomodoro(config: &Config, timer: &Timer) {
     let mut state: State;
     let mut duration: u64;
-
-    for cycle in 1..=config.pomodoro_cycles {
+    let mut cycle: u32 = 1;
+    
+    loop {
         state = State::Work;
         duration = config.work_duration;
 
@@ -26,6 +29,12 @@ fn start_pomodoro(config: &Config, timer: &Timer) {
         };
 
         timer.start(cycle, config.pomodoro_cycles, state, duration);
+
+        if matches!(state, State::Break) {
+            cycle = 0;
+        }
+
+        cycle += 1;
     }
 }
 
@@ -41,4 +50,6 @@ fn main() {
     let timer = Timer::new(tick_notifier);
 
     start_pomodoro(&config,  &timer);
+
+    Notify::notify("Session ended");
 }
