@@ -15,7 +15,7 @@ impl Notify {
         Self::notify(message);
     }
 
-    fn notify(message: &str) {
+    pub fn notify(message: &str) {
         let _ = Notification::new()
             .summary("Pomodoro")
             .body(message)
