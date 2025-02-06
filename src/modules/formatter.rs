@@ -1,8 +1,8 @@
-pub fn format_string(template: String, args: &[String]) -> String {
+pub fn format_string(template: String, args: &[impl ToString]) -> String {
     let mut result = String::from(template);
-    for (_i, arg) in args.iter().enumerate() {
-        let placeholder = format!("{{}}");
-        result = result.replacen(placeholder.as_str(), arg.as_str(), 1);
+    for arg in args {
+        let placeholder = "{}";
+        result = result.replacen(placeholder, &arg.to_string(), 1);
     }
     result
 }

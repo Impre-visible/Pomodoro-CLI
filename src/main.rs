@@ -5,6 +5,7 @@ use modules::display::Display;
 use modules::timer::Timer;
 use modules::notify::Notify;
 use modules::state::State;
+use modules::tick_notifier::TickNotifier;
 
 fn start_pomodoro(config: &Config, timer: &Timer) {
     let mut state: State;
@@ -31,10 +32,13 @@ fn start_pomodoro(config: &Config, timer: &Timer) {
 fn main() {
     let config = Config::load();
 
-    let display = Display::new();
-    let notify = Notify::new();
 
-    let timer = Timer::new(display, notify);
+    let mut tick_notifier = TickNotifier::new();
+
+    tick_notifier.register(Box::new(Display::on_tick));
+    tick_notifier.register(Box::new(Notify::on_tick));
+
+    let timer = Timer::new(tick_notifier);
 
     start_pomodoro(&config,  &timer);
 }
